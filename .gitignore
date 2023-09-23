@@ -1,0 +1,22 @@
+#Ingore build folder
+Binaries/
+Intermediate/
+
+#Ignore config files
+Saved/
+
+#Ignore packaged output
+Build/
+
+#Ignore visual studio temp files
+*.suo
+*.user
+*.sln.docstates
+
+#Ignore Windows files
+Thumbs.db
+desktop.ini
+
+#ignore large files
+bdb1ad50fe1ba9bb.ipch
+Browse.VC.db
