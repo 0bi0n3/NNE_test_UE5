@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -31,16 +29,18 @@ class NNETUTORIAL_API UNeuralNetworkModel : public UObject
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "NNE - Tutorial")
-	static TArray<FString> GetRunTimeNames();
 
 	UFUNCTION(BlueprintCallable, Category = "NNE - Tutorial")
-	static UNeuralNetworkModel* CreateModel(UObject* Parent, FString Runtime, UNNEModelData* ModelData);
+	static TArray<FString> GetRuntimeNames();
+
+	UFUNCTION(BlueprintCallable, Category = "NNE - Tutorial")
+	static UNeuralNetworkModel* CreateModel(UObject* Parent, FString RuntimeName, UNNEModelData* ModelData);
 
 	UFUNCTION(BlueprintCallable, Category = "NNE - Tutorial")
 	static bool CreateTensor(TArray<int32> Shape, UPARAM(ref) FNeuralNetworkTensor& Tensor);
 
 public:
+
 	UFUNCTION(BlueprintCallable, Category = "NNE - Tutorial")
 	int32 NumInputs();
 
@@ -54,6 +54,7 @@ public:
 	TArray<int32> GetOutputShape(int32 Index);
 
 public:
+
 	UFUNCTION(BlueprintCallable, Category = "NNE - Tutorial")
 	bool SetInputs(const TArray<FNeuralNetworkTensor>& Inputs);
 
@@ -61,6 +62,7 @@ public:
 	bool RunSync(UPARAM(ref) TArray<FNeuralNetworkTensor>& Outputs);
 
 private:
+
 	TSharedPtr<UE::NNECore::IModelCPU> Model;
 
 	TArray<UE::NNECore::FTensorBindingCPU> InputBindings;

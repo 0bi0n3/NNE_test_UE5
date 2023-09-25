@@ -3,7 +3,7 @@
 
 #include "NeuralNetworkModel.h"
 
-TArray<FString> UNeuralNetworkModel::GetRunTimeNames()
+TArray<FString> UNeuralNetworkModel::GetRuntimeNames()
 {
 	using namespace UE::NNECore;
 
@@ -23,25 +23,23 @@ UNeuralNetworkModel* UNeuralNetworkModel::CreateModel(UObject* Parent, FString R
 {
 	using namespace UE::NNECore;
 
-	// error check
 	if (!ModelData)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid model data!"));
+		UE_LOG(LogTemp, Error, TEXT("Invalid model data"));
 		return nullptr;
 	}
 
-	// error check
 	TWeakInterfacePtr<INNERuntimeCPU> Runtime = GetRuntime<INNERuntimeCPU>(RuntimeName);
 	if (!Runtime.IsValid())
 	{
-		UE_LOG(LogTemp, Error, TEXT("No CPU runtime '%s' found."), *RuntimeName);
+		UE_LOG(LogTemp, Error, TEXT("No CPU runtime '%s' found"), *RuntimeName);
 		return nullptr;
 	}
 
 	TUniquePtr<IModelCPU> UniqueModel = Runtime->CreateModelCPU(ModelData);
 	if (!UniqueModel.IsValid())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Could not creat the CPU model."));
+		UE_LOG(LogTemp, Error, TEXT("Could not create the CPU model"));
 		return nullptr;
 	}
 
@@ -50,8 +48,9 @@ UNeuralNetworkModel* UNeuralNetworkModel::CreateModel(UObject* Parent, FString R
 	{
 		Result->Model = TSharedPtr<IModelCPU>(UniqueModel.Release());
 		return Result;
-	} 
-	return nullptr; 
+	}
+
+	return nullptr;
 }
 
 bool UNeuralNetworkModel::CreateTensor(TArray<int32> Shape, UPARAM(ref) FNeuralNetworkTensor& Tensor)
@@ -92,13 +91,14 @@ TArray<int32> UNeuralNetworkModel::GetInputShape(int32 Index)
 {
 	check(Model.IsValid())
 
-	using namespace UE::NNECore;
+		using namespace UE::NNECore;
 
 	TConstArrayView<FTensorDesc> Desc = Model->GetInputTensorDescs();
 	if (Index < 0 || Index >= Desc.Num())
 	{
 		return TArray<int32>();
 	}
+
 	return TArray<int32>(Desc[Index].GetShape().GetData());
 }
 
@@ -106,13 +106,14 @@ TArray<int32> UNeuralNetworkModel::GetOutputShape(int32 Index)
 {
 	check(Model.IsValid())
 
-	using namespace UE::NNECore;
+		using namespace UE::NNECore;
 
 	TConstArrayView<FTensorDesc> Desc = Model->GetOutputTensorDescs();
 	if (Index < 0 || Index >= Desc.Num())
 	{
 		return TArray<int32>();
 	}
+
 	return TArray<int32>(Desc[Index].GetShape().GetData());
 }
 
@@ -120,15 +121,15 @@ bool UNeuralNetworkModel::SetInputs(const TArray<FNeuralNetworkTensor>& Inputs)
 {
 	check(Model.IsValid())
 
-	using namespace UE::NNECore;
-	
+		using namespace UE::NNECore;
+
 	InputBindings.Reset();
 	InputShapes.Reset();
 
 	TConstArrayView<FTensorDesc> InputDescs = Model->GetInputTensorDescs();
 	if (InputDescs.Num() != Inputs.Num())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid number of input tensors provided."));
+		UE_LOG(LogTemp, Error, TEXT("Invalid number of input tensors provided"));
 		return false;
 	}
 
@@ -143,22 +144,23 @@ bool UNeuralNetworkModel::SetInputs(const TArray<FNeuralNetworkTensor>& Inputs)
 
 	if (Model->SetInputTensorShapes(InputShapes) != 0)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to set the input shapes."))
-			return false;
+		UE_LOG(LogTemp, Error, TEXT("Failed to set the input shapes"));
+		return false;
 	}
+
 	return true;
 }
 
 bool UNeuralNetworkModel::RunSync(UPARAM(ref) TArray<FNeuralNetworkTensor>& Outputs)
 {
-	check(Model.IsValid())
+	check(Model.IsValid());
 
 	using namespace UE::NNECore;
 
 	TConstArrayView<FTensorDesc> OutputDescs = Model->GetOutputTensorDescs();
 	if (OutputDescs.Num() != Outputs.Num())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid number of output tesnors provided."));
+		UE_LOG(LogTemp, Error, TEXT("Invalid number of output tensors provided"));
 		return false;
 	}
 
@@ -169,5 +171,6 @@ bool UNeuralNetworkModel::RunSync(UPARAM(ref) TArray<FNeuralNetworkTensor>& Outp
 		OutputBindings[i].Data = (void*)Outputs[i].Data.GetData();
 		OutputBindings[i].SizeInBytes = Outputs[i].Data.Num() * sizeof(float);
 	}
+
 	return Model->RunSync(InputBindings, OutputBindings) == 0;
 }

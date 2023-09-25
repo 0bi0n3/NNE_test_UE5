@@ -18,5 +18,6 @@ Thumbs.db
 desktop.ini
 
 #ignore large files
-bdb1ad50fe1ba9bb.ipch
+*.ipch
 Browse.VC.db
+AIModels/
