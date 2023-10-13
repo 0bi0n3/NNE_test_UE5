@@ -19,6 +19,7 @@ void AAMyNeuralNetworkActor::BeginPlay()
 
 	NeuralNetworkModel = UNeuralNetworkModel::CreateModel(this, TEXT("NNERuntimeORTCpu"), ModelData);
 
+	 
 }
 
 // Called every frame
